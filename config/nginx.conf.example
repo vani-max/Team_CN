@@ -1,0 +1,21 @@
+upstream backend_servers {
+    server BACKEND_IP:3001;
+    server BACKEND_IP:3002;
+}
+
+server {
+    listen 8443 ssl;
+    server_name app.team3.test api.team3.test;
+
+    ssl_certificate /path/to/certificate.crt;
+    ssl_certificate_key /path/to/private.key;
+
+    location / {
+        proxy_pass http://backend_servers;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}

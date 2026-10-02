@@ -1,0 +1,33 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+.venv/
+
+# Environment variables
+.env
+.env.*
+
+# TLS private keys
+*.key
+*.pem
+
+# Certificates generated locally
+*.crt
+
+# Local configuration
+config/dnsmasq.conf
+config/nginx.conf
+
+# Packet captures
+*.pcap
+*.pcapng
+
+# OS/editor files
+.vscode/
+.idea/

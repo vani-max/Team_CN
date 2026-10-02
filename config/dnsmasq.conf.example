@@ -1,0 +1,5 @@
+# Private DNS configuration
+# Replace TEAM_NUMBER and EDGE_IP with your actual values.
+
+address=/app.team3.test/10.7.3.71
+address=/api.team3.test/10.7.5.11
