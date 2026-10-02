@@ -44,11 +44,9 @@ All machines are connected to the same private LAN.
 
 | Machine | Role                 | IP Address  | Services                         |
 | ------- | -------------------- | ----------- | -------------------------------- |
-| Mac 1   | DNS + Test Client    | `10.7.3.XX` | dnsmasq, dig, curl               |
-| Mac 2   | Edge / Reverse Proxy | `10.7.3.XX` | nginx, HTTPS/TLS                 |
-| Mac 3   | Backend Server       | `10.7.3.XX` | Backend A :3001, Backend B :3002 |
-
-> Replace the `10.7.3.XX` values with the actual IP addresses used during the demonstration.
+| Mac 1   | DNS + Test Client    | `10.7.3.71` | dnsmasq, dig, curl               |
+| Mac 2   | Edge / Reverse Proxy | `10.7.5.11` | nginx, HTTPS/TLS                 |
+| Mac 3   | Backend Server       | `10.7.20.49` | Backend A :3001, Backend B :3002 |
 
 ### Network
 
@@ -90,29 +88,20 @@ The private DNS server runs on Mac 1 using `dnsmasq`.
 Required DNS records:
 
 ```text
-app.teamX.test  -> Mac 2 IP
-api.teamX.test  -> Mac 2 IP
+app.team3.test -> 10.7.5.11
+api.team3.test -> 10.7.5.11
 ```
-
-Example:
-
-```text
-app.team3.test -> 10.7.3.102
-api.team3.test -> 10.7.3.102
-```
-
-Replace the IP address with the actual Mac 2 address.
 
 ### Verify DNS
 
 ```bash
-dig app.teamX.test
+dig app.team3.test
 ```
 
 or:
 
 ```bash
-nslookup app.teamX.test
+nslookup app.team3.test
 ```
 
 The returned address should be the private IP address of Mac 2.
@@ -231,8 +220,8 @@ Example upstream configuration:
 
 ```nginx
 upstream backend_servers {
-    server BACKEND_IP:3001;
-    server BACKEND_IP:3002;
+    server 10.7.20.49:3001;
+    server 10.7.20.49:3002;
 }
 ```
 
@@ -245,7 +234,7 @@ Client
   |
   | HTTPS
   v
-app.teamX.test
+app.team3.test
   |
   v
 Nginx
@@ -264,8 +253,8 @@ TLS terminates at the nginx edge server.
 The certificate must cover:
 
 ```text
-app.teamX.test
-api.teamX.test
+app.team3.test
+api.team3.test
 ```
 
 The client machines should trust the local CA/certificate.
@@ -277,8 +266,6 @@ Do not use:
 ```bash
 curl -k
 ```
-
-for the final demonstration.
 
 ---
 
@@ -295,7 +282,7 @@ Cache-Control: max-age=60
 Check the headers using:
 
 ```bash
-curl -I https://app.teamX.test
+curl -I https://app.team3.test
 ```
 
 The response should contain the cache-control header.
@@ -312,31 +299,31 @@ The caching demonstration should show either:
 ### Test Backend A
 
 ```bash
-curl -i http://BACKEND_IP:3001/
+curl -i http://10.7.20.49:3001/
 ```
 
 ### Test Backend B
 
 ```bash
-curl -i http://BACKEND_IP:3002/
+curl -i http://10.7.20.49:3002/
 ```
 
 ### Test DNS
 
 ```bash
-dig app.teamX.test
+dig app.team3.test
 ```
 
 ### Test HTTPS
 
 ```bash
-curl -i https://app.teamX.test/
+curl -i https://app.team3.test/
 ```
 
 ### Test status endpoint
 
 ```bash
-curl -i https://app.teamX.test/api/status
+curl -i https://app.team3.test/api/status
 ```
 
 ### Test load balancing
@@ -345,7 +332,7 @@ Run multiple requests:
 
 ```bash
 for i in {1..10}; do
-    curl -s -D - https://app.teamX.test/api/status -o /dev/null | grep X-Backend
+    curl -s -D - https://app.team3.test/api/status -o /dev/null | grep X-Backend
 done
 ```
 
@@ -429,9 +416,9 @@ Show HTTP headers and the encrypted application traffic carried over TLS.
 
 ---
 
-## 12. Evidence to Collect
+## 12. Evidence
 
-The `evidence/` directory should contain screenshots or exported captures for:
+The `evidence/` directory contains all the screenshots or exported captures for:
 
 ```text
 evidence/
@@ -494,8 +481,8 @@ Packet captures can also be stored here if required:
 ### 1. Clone the repository
 
 ```bash
-git clone <REPOSITORY_URL>
-cd <REPOSITORY_NAME>
+git clone [<REPOSITORY_URL>](https://github.com/vani-max/Team_CN.git)
+cd Team_CN
 ```
 
 ### 2. Start Backend A
@@ -526,7 +513,6 @@ Configure dnsmasq using:
 config/dnsmasq.conf.example
 ```
 
-Replace the example IP address with the actual nginx/edge IP.
 
 ### 6. Configure nginx
 
@@ -535,8 +521,6 @@ Use:
 ```text
 config/nginx.conf.example
 ```
-
-Replace the backend IP and certificate paths with the actual values.
 
 ### 7. Configure TLS
 
@@ -549,7 +533,7 @@ config/TLS_SETUP.md
 ### 8. Test the complete flow
 
 ```bash
-dig app.teamX.test
+dig app.team3.test
 ```
 
 then:
@@ -567,7 +551,7 @@ curl -i https://app.teamX.test/api/status
 Check:
 
 ```bash
-dig app.teamX.test
+dig app.team3.test
 ```
 
 Then verify that:
@@ -582,8 +566,8 @@ Then verify that:
 Check:
 
 ```bash
-curl http://BACKEND_IP:3001/
-curl http://BACKEND_IP:3002/
+curl http://10.7.20.49:3001/
+curl http://10.7.20.49:3002/
 ```
 
 Check that the backend is listening:
@@ -598,8 +582,8 @@ lsof -i :3002
 Check direct connectivity from Mac 2:
 
 ```bash
-curl http://BACKEND_IP:3001/
-curl http://BACKEND_IP:3002/
+curl http://10.7.20.49:3001/
+curl http://10.7.20.49:3002/
 ```
 
 Then inspect the nginx configuration and logs.
@@ -619,8 +603,8 @@ Check the nginx upstream:
 
 ```nginx
 upstream backend_servers {
-    server BACKEND_IP:3001;
-    server BACKEND_IP:3002;
+    server 10.7.20.49:3001;
+    server 10.7.20.49:3002;
 }
 ```
 
@@ -629,45 +613,14 @@ Then send multiple requests and inspect:
 ```text
 X-Backend
 ```
-
----
-
-## 16. Project Demonstration Flow
-
-The final demonstration should follow this order:
-
-1. Show the topology and IP/service inventory.
-2. Verify that all machines are on the private LAN.
-3. Show private DNS resolution.
-4. Access the service using `app.teamX.test`.
-5. Show HTTPS/TLS.
-6. Demonstrate requests reaching both backends.
-7. Show HTTP caching headers.
-8. Show Wireshark DNS, TCP and TLS evidence.
-9. Demonstrate backend failure handling where applicable.
-10. Explain the complete request flow.
-11. Answer individual viva questions.
-
 ---
 
 ## 17. Team Members
 
 | Name     | Role / Contribution |
 | -------- | ------------------- |
-| Member 1 | DNS / Network       |
-| Member 2 | Nginx / TLS         |
-| Member 3 | Backend / Testing   |
-
-Update this table with the actual team members and contributions.
+| Pranavi | DNS / Network       |
+| Bhoomi | Nginx / TLS         |
+| Vani | Backend / Testing   |
 
 ---
-
-## 18. Important Notes
-
-* All machines should remain on the same private LAN during the demonstration.
-* Use the `.test` namespace for private domains.
-* Do not use `.local`.
-* Clients should access the application using the domain name rather than directly using an IP address.
-* Backends should be LAN-accessible.
-* The network configuration is the primary focus of the project; backend application logic is intentionally simple.
-* Keep configuration examples in the repository, but do not commit private TLS keys or machine-specific secrets.
