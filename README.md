@@ -481,7 +481,7 @@ Packet captures can also be stored here if required:
 ### 1. Clone the repository
 
 ```bash
-git clone [<REPOSITORY_URL>](https://github.com/vani-max/Team_CN.git)
+git clone https://github.com/vani-max/Team_CN.git
 cd Team_CN
 ```
 
@@ -539,7 +539,7 @@ dig app.team3.test
 then:
 
 ```bash
-curl -i https://app.teamX.test/api/status
+curl -i https://app.team3.test/api/status
 ```
 
 ---
