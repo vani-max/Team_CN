@@ -48,6 +48,8 @@ All machines are connected to the same private LAN.
 | Mac 2   | Edge / Reverse Proxy | `10.7.5.11` | nginx, HTTPS/TLS                 |
 | Mac 3   | Backend Server       | `10.7.20.49` | Backend A :3001, Backend B :3002 |
 
+Note : When we reconned the network due to some error, our IPs changed and thus failure test 2, 3 and 5 are done on the new IPs.
+
 ### Network
 
 ```text
