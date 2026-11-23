@@ -4,9 +4,9 @@
 
 | Machine | Role | IP Address | Services |
 |---|---|---|---|
-| Mac 1 | DNS + Client | 10.7.3.71 | dnsmasq, dig, curl |
-| Mac 2 | Edge / Reverse Proxy | 10.7.5.11 | nginx, HTTPS/TLS |
-| Mac 3 | Backend Server | 10.7.20.49 | Backend A :3001, Backend B :3002 |
+| Mac 1 (Vani) | DNS + Client | 10.7.2.89 | dnsmasq, dig, curl |
+| Mac 2 (Bhoomi) | Edge / Reverse Proxy | 10.7.28.46 | nginx, HTTPS/TLS |
+| Mac 3 (Pranavi) | Backend Server | 10.7.25.37 | Backend A :3001, Backend B :3002 |
 
 ## Request Flow
 
@@ -16,7 +16,7 @@ DNS Query
   ↓
 Mac 1 - dnsmasq
   ↓
-app.teamX.test → Mac 2 IP
+app.team1.test → Mac 2 IP
   ↓
 Mac 2 - nginx
   ↓

@@ -65,7 +65,7 @@ en0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1436
 	options=6460<TSO4,TSO6,CHANNEL_IO,PARTIAL_CSUM,ZEROINVERT_CSUM>
 	ether 92:c3:47:07:bd:de
 	inet6 fe80::1052:cceb:53c1:bee2%en0 prefixlen 64 secured scopeid 0xb 
-	inet 10.7.20.49 netmask 0xffffe000 broadcast 10.7.31.255
+	inet 10.7.25.37 netmask 0xffffe000 broadcast 10.7.31.255
 	nd6 options=201<PERFORMNUD,DAD>
 	media: autoselect
 	status: active

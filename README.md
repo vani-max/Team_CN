@@ -17,7 +17,7 @@ Client
    v
 Private DNS Server
    |
-   | Resolves app.teamX.test
+   | Resolves app.team1.test
    v
 Nginx Edge / Reverse Proxy
    |
@@ -44,16 +44,14 @@ All machines are connected to the same private LAN.
 
 | Machine | Role                 | IP Address  | Services                         |
 | ------- | -------------------- | ----------- | -------------------------------- |
-| Mac 1   | DNS + Test Client    | `10.7.3.71` | dnsmasq, dig, curl               |
-| Mac 2   | Edge / Reverse Proxy | `10.7.5.11` | nginx, HTTPS/TLS                 |
-| Mac 3   | Backend Server       | `10.7.20.49` | Backend A :3001, Backend B :3002 |
-
-Note : When we reconned the network due to some error, our IPs changed and thus failure test 2, 3 and 5 are done on the new IPs.
+| Mac 1 (Vani)   | DNS + Test Client    | `10.7.2.89` | dnsmasq, dig, curl               |
+| Mac 2 (Bhoomi) | Edge / Reverse Proxy | `10.7.28.46` | nginx, HTTPS/TLS                 |
+| Mac 3 (Pranavi) | Backend Server       | `10.7.25.37` | Backend A :3001, Backend B :3002 |
 
 ### Network
 
 ```text
-Private LAN: 10.7.3.0/24
+Private LAN: 10.7.0.0/19 (Netmask: 255.255.224.0)
 
 Mac 1
 DNS + Client
@@ -90,20 +88,20 @@ The private DNS server runs on Mac 1 using `dnsmasq`.
 Required DNS records:
 
 ```text
-app.team3.test -> 10.7.5.11
-api.team3.test -> 10.7.5.11
+app.team1.test -> 10.7.28.46
+api.team1.test -> 10.7.28.46
 ```
 
 ### Verify DNS
 
 ```bash
-dig app.team3.test
+dig app.team1.test
 ```
 
 or:
 
 ```bash
-nslookup app.team3.test
+nslookup app.team1.test
 ```
 
 The returned address should be the private IP address of Mac 2.
@@ -222,8 +220,8 @@ Example upstream configuration:
 
 ```nginx
 upstream backend_servers {
-    server 10.7.20.49:3001;
-    server 10.7.20.49:3002;
+    server 10.7.25.37:3001;
+    server 10.7.25.37:3002;
 }
 ```
 
@@ -236,7 +234,7 @@ Client
   |
   | HTTPS
   v
-app.team3.test
+app.team1.test
   |
   v
 Nginx
@@ -255,8 +253,8 @@ TLS terminates at the nginx edge server.
 The certificate must cover:
 
 ```text
-app.team3.test
-api.team3.test
+app.team1.test
+api.team1.test
 ```
 
 The client machines should trust the local CA/certificate.
@@ -284,7 +282,7 @@ Cache-Control: max-age=60
 Check the headers using:
 
 ```bash
-curl -I https://app.team3.test
+curl -I https://app.team1.test
 ```
 
 The response should contain the cache-control header.
@@ -301,31 +299,31 @@ The caching demonstration should show either:
 ### Test Backend A
 
 ```bash
-curl -i http://10.7.20.49:3001/
+curl -i http://10.7.25.37:3001/
 ```
 
 ### Test Backend B
 
 ```bash
-curl -i http://10.7.20.49:3002/
+curl -i http://10.7.25.37:3002/
 ```
 
 ### Test DNS
 
 ```bash
-dig app.team3.test
+dig app.team1.test
 ```
 
 ### Test HTTPS
 
 ```bash
-curl -i https://app.team3.test/
+curl -i https://app.team1.test/
 ```
 
 ### Test status endpoint
 
 ```bash
-curl -i https://app.team3.test/api/status
+curl -i https://app.team1.test/api/status
 ```
 
 ### Test load balancing
@@ -334,7 +332,7 @@ Run multiple requests:
 
 ```bash
 for i in {1..10}; do
-    curl -s -D - https://app.team3.test/api/status -o /dev/null | grep X-Backend
+    curl -s -D - https://app.team1.test/api/status -o /dev/null | grep X-Backend
 done
 ```
 
@@ -534,13 +532,13 @@ config/TLS_SETUP.md
 ### 8. Test the complete flow
 
 ```bash
-dig app.team3.test
+dig app.team1.test
 ```
 
 then:
 
 ```bash
-curl -i https://app.team3.test/api/status
+curl -i https://app.team1.test/api/status
 ```
 
 ---
@@ -552,7 +550,7 @@ curl -i https://app.team3.test/api/status
 Check:
 
 ```bash
-dig app.team3.test
+dig app.team1.test
 ```
 
 Then verify that:
@@ -567,8 +565,8 @@ Then verify that:
 Check:
 
 ```bash
-curl http://10.7.20.49:3001/
-curl http://10.7.20.49:3002/
+curl http://10.7.25.37:3001/
+curl http://10.7.25.37:3002/
 ```
 
 Check that the backend is listening:
@@ -583,8 +581,8 @@ lsof -i :3002
 Check direct connectivity from Mac 2:
 
 ```bash
-curl http://10.7.20.49:3001/
-curl http://10.7.20.49:3002/
+curl http://10.7.25.37:3001/
+curl http://10.7.25.37:3002/
 ```
 
 Then inspect the nginx configuration and logs.
@@ -604,8 +602,8 @@ Check the nginx upstream:
 
 ```nginx
 upstream backend_servers {
-    server 10.7.20.49:3001;
-    server 10.7.20.49:3002;
+    server 10.7.25.37:3001;
+    server 10.7.25.37:3002;
 }
 ```
 
@@ -618,10 +616,10 @@ X-Backend
 
 ## 17. Team Members
 
-| Name     | Role / Contribution |
-| -------- | ------------------- |
-| Pranavi | DNS / Network       |
-| Bhoomi | Nginx / TLS         |
-| Vani | Backend / Testing   |
+| Name     | Machine & Role |
+| -------- | -------------- |
+| Vani     | Mac 1 - DNS + Test Client (`10.7.2.89`) |
+| Bhoomi   | Mac 2 - Edge / Nginx / TLS (`10.7.28.46`) |
+| Pranavi  | Mac 3 - Backend Server (`10.7.25.37`) |
 
 ---
