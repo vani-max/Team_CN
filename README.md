@@ -422,19 +422,15 @@ The `evidence/` directory contains all the screenshots or exported captures for:
 
 ```text
 evidence/
-├── 01_topology.png
-├── 02_ip_configuration.png
-├── 03_ping_test.png
-├── 04_dns_resolution.png
-├── 05_backend_a.png
-├── 06_backend_b.png
-├── 07_nginx_load_balancing.png
-├── 08_https_tls.png
-├── 09_http_headers_cache.png
-├── 10_wireshark_dns.png
-├── 11_wireshark_tcp.png
-├── 12_wireshark_tls.png
-└── 13_load_balancing_results.png
+├── network/           # LAN ping tests and reachability
+├── dns/               # DNS queries and resolution verification
+├── backend/           # Direct backend health checks and load balancing
+├── nginx/             # Nginx configuration tests and proxy verification
+├── caching/           # Cache-Control, ETag, and 304 Not Modified
+├── tls/               # HTTPS / TLS termination and load balancing
+├── resilience/        # Phase 2 extensions (Backup DNS, TTL, Isolation, HA, Cutover)
+├── wireshark/         # Packet captures for DNS, TCP 3-way handshake, TLS
+└── failures/          # Controlled failure scenario demonstrations
 ```
 
 Packet captures can also be stored here if required:
