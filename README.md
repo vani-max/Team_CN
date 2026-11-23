@@ -455,8 +455,7 @@ Packet captures can also be stored here if required:
 ├── README.md
 │
 ├── backend/
-│   ├── backend_a.py
-│   ├── backend_b.py
+│   ├── server.py
 │   └── requirements.txt
 │
 ├── scripts/
